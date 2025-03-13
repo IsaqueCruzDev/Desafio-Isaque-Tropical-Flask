@@ -88,19 +88,25 @@ const data = [
     { "Nome": "Maria", "Idade": "30", "Cidade": "Rio de Janeiro" }
 ];
 
-const response = await fetch("http://127.0.0.1:5000/xlsxGenerate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-});
-
-const blob = await response.blob();
-const url = window.URL.createObjectURL(blob);
-const link = document.createElement("a");
-link.href = url;
-link.setAttribute("download", "propriedades_logs.xlsx");
-document.body.appendChild(link);
-link.click();
+export const xlsxGenerate = async (data: any) => {
+    try {
+        const response = await flaskApi.post('/xlsxGenerate', data, {
+            responseType: 'blob',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "properties_logs.xlsx"); // Nome do arquivo
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        throw error
+    }
+}
 ```
 
 📌 **Regras:**
